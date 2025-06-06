@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Countdown to Melo</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: black;
+      color: white;
+      font-family: monospace;
+      flex-direction: column;
+    }
+    #timer {
+      font-size: 5rem;
+      margin-bottom: 2rem;
+    }
+    #message {
+      font-size: 1.5rem;
+      color: #00ffcc;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="timer">09:00:00</div>
+  <div id="message">text Melo. It’s time. He’s waiting.</div>
+
+  <script>
+    const timerElement = document.getElementById("timer");
+    const messageElement = document.getElementById("message");
+
+    // Set 9-hour countdown
+    let countdown = 9 * 60 * 60; // seconds
+
+    // Ask for notification permission
+    if ("Notification" in window && Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+
+    const formatTime = (sec) => {
+      const h = String(Math.floor(sec / 3600)).padStart(2, '0');
+      const m = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
+      const s = String(sec % 60).padStart(2, '0');
+      return `${h}:${m}:${s}`;
+    };
+
+    const tick = () => {
+      if (countdown > 0) {
+        countdown--;
+        timerElement.textContent = formatTime(countdown);
+      } else {
+        timerElement.textContent = "00:00:00";
+        messageElement.style.display = "block";
+
+        // Push Notification
+        if ("Notification" in window && Notification.permission === "granted") {
+          new Notification("text Melo. It’s time. He’s waiting.");
+        }
+
+        clearInterval(interval);
+      }
+    };
+
+    const interval = setInterval(tick, 1000);
+  </script>
+</body>
+</html>
